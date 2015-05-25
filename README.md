@@ -2,8 +2,7 @@
 I enjoy Rotarycraft and I think it's one of the best industry mods. What follows shouldn't be taken as criticism but
 rather as a humble suggestion on how an already great mod could maybe be made even better.
 
-I also appreciate and respect the efforts Reika has made in balance and progression and I try throughout to respect
-that.
+I also appreciate the efforts Reika has made in balance and progression and I try throughout to respect them.
 
 It's worth noting that I'm still on my first play through however I have all the bedrock toys and an automated extractor
 setup so I feel I'm reasonably familiar with the mod.
