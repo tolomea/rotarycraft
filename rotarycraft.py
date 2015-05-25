@@ -1,50 +1,127 @@
 from __future__ import division
 
+from collections import defaultdict, OrderedDict
 
-# making things up
-ITERATIONS = 1000
-MULTIPLIER = .5
+TITLE_WIDTH = 15
+
+
+def pairs(seq):
+    for x in zip(seq[:-1], seq[1:]):
+        yield x
+
+
+class Line(object):
+    def __init__(self, *points):
+        """ points are (speed, torque, gradient) """
+        self.points = points
+
+    @classmethod
+    def make(cls, *points):
+        """ points are (speed, torque) """
+
+        # first point must be speed 0
+        assert points[0][0] == 0
+
+        # points must proceed in increasing speed order
+        for op, p in pairs(points):
+            assert p[0] > op[0]
+
+        # if last segment is negative going then it must finish on 0 torque
+        if points[-2][1] > points[-1][1]:
+            assert points[-1][1] == 0
+
+        res = []
+        for op, p in pairs(points):
+            gradient = (p[1] - op[1]) / (p[0] - op[0])
+            res.append((op[0], op[1], gradient))
+        # zero intersect for downward lines
+        if p[1] == 0:
+            res.append((p[0], p[1], 0))
+
+        return cls(*res)
+
+    @classmethod
+    def zero(cls):
+        return cls((0, 0, 0))
+
+    def get_torque(self, speed):
+        op = self.points[0]
+        for p in self.points[1:]:
+            if p[0] > speed:
+                break
+            op = p
+        return (speed - op[0]) * op[2] + op[1]
+
+    def __add__(self, other):
+        # get (speed, gradient) pairs for the start and end of each segment
+        x = [(p[0], p[2]) for p in (self.points + other.points)]
+        for op, p in pairs(self.points):
+            x.append((p[0], -op[2]))
+        for op, p in pairs(other.points):
+            x.append((p[0], -op[2]))
+
+        t = self.points[0][1] + other.points[0][1]
+        g = 0
+        s = 0
+        points = []
+        for p in sorted(x):
+            if p[0] != s:
+                points.append((s, t, g))
+                t += (p[0] - s) * g
+                s = p[0]
+            g += p[1]
+        t += (p[0] - s) * g
+        points.append((s, t, g))
+        return Line(*points)
+
+    def __sub__(self, other):
+        return self + (other * -1)
+
+    def __mul__(self, i):
+        points = [(s/abs(i), t*i, g*i*abs(i)) for (s, t, g) in self.points]
+        return Line(*points)
+
+    def __truediv__(self, i):
+        return self * (1 / i)
+
+    def __str__(self):
+        return "Line(" + ", ".join(str(p) for p in self.points) + ")"
+
+    def __eq__(self, other):
+        return self.points == other.points
+
+    def get_zero_intersect(self):
+        for p, op in pairs(self.points):
+            if op[1] <= 0:
+                break
+        else:
+            p = self.points[-1]
+        if p[2]:
+            return p[0] - p[1] / p[2]
+        else:
+            return p[0]
+
+
+assert Line.make((0,0), (10,10)) == Line((0,0,1))
+assert Line.make((0,0), (10,10)) * 2 == Line((0, 0, 4))
+assert Line.make((0,0), (10,10)) / 2 == Line((0, 0, 0.25))
+assert Line.make((0,0), (10,10), (20, 10)) == Line((0, 0, 1), (10, 10, 0))
+assert Line.make((0,0), (10,10), (20, 10)) * 2 == Line((0, 0, 4), (5, 20, 0))
+assert Line.make((0,0), (10,10), (20, 10)) / 2 == Line((0, 0, 0.25), (20, 5, 0))
+assert Line.make((0,10), (10,10), (20, 0)) == Line((0, 10, 0), (10, 10, -1), (20, 0, 0))
+assert Line.make((0,10), (10,10), (20, 0)) * 2 == Line((0, 20, 0), (5, 20, -4), (10, 0, 0))
+assert Line.make((0,10), (10,10), (20, 0)) / 2 == Line((0, 5, 0), (20, 5, -0.25), (40, 0, 0))
+
+assert Line.make((0,0), (10,10)) + Line.make((0,0), (10,10)) == Line((0, 0.0, 2.0))
+assert Line.make((0,0), (10,10), (20,20)) + Line.make((0,0), (10,10), (20,20)) == Line((0, 0, 2.0), (10, 20.0, 2.0))
+assert Line.make((0,0), (10,10), (20,20)) + Line.make((0,0), (10,10)) == Line((0, 0, 2.0), (10, 20.0, 2.0))
+assert Line.make((0,0), (10,10)) + Line.make((0,10), (5,10), (15,0)) == Line((0, 10, 1.0), (5, 15.0, 0.0), (15, 15.0, 1.0))
+assert Line.make((0,10), (5,10), (15,0)) + Line.make((0,0), (10,10)) == Line((0, 10, 1.0), (5, 15.0, 0.0), (15, 15.0, 1.0))
+
 
 class Node(object):
     def __init__(self, *neighbours):
-        self.neighbours = set()
-        for node in neighbours:
-            self.attach(node)
-
-    def attach(self, node):
-        if node not in self.neighbours:
-            self.neighbours.add(node)
-            node.attach(self)
-
-    def gear_shift_torque_in(self, torque, node):
-        return torque
-
-    def gear_shift_torque_out(self, torque, node):
-        return torque
-
-    def gear_shift_speed_in(self, speed, node):
-        return speed
-
-    def gear_shift_speed_out(self, speed, node):
-        return speed
-
-    def check_load_limits(self, torque, speed):
-        pass
-
-    def supplied_torque(self, speed):
-        return 0
-
-    def consumed_torque(self, speed):
-        return 0
-
-
-class Shaft(Node):
-    pass
-
-
-class GearBox(Node):
-    def __init__(self, *neighbours):
-        self.neighbours = dict()
+        self.neighbours = OrderedDict()
         for node in neighbours:
             if isinstance(node, tuple):
                 ratio, node = node
@@ -57,30 +134,34 @@ class GearBox(Node):
             self.neighbours[node] = ratio
             node.attach(self)
 
-    def gear_shift_torque_in(self, torque, node):
-        return torque * self.neighbours.get(node, 1)
+    def supplied(self):
+        return Line.zero()
 
-    def gear_shift_torque_out(self, torque, node):
-        return torque / self.neighbours.get(node, 1)
+    def consumed(self):
+        return Line.zero()
 
-    def gear_shift_speed_in(self, speed, node):
-        return speed / self.neighbours.get(node, 1)
 
-    def gear_shift_speed_out(self, speed, node):
-        return speed * self.neighbours.get(node, 1)
+class Shaft(Node):
+    pass
 
-    def check_load_limits(self, torque, speed):
-        # adjust for the true torque load on the gears
-        torque /= min(self.neighbours.values())
+
+class GearBox(Node):
+    pass
 
 
 class BasicEngine(Node):
     # subclass defines speed and torque for peak power
     # torque is flat below that speed and fades out toward that speed * 2
-    def supplied_torque(self, speed):
-        if speed < self.speed:
-            return self.torque
-        return max(0, self.speed * 2 - speed) / self.speed * self.torque
+    def supplied(self):
+        assert len(self.neighbours) < 2
+        return Line.make((0, self.torque), (self.speed, self.torque), (2*self.speed, 0))
+
+
+class BasicMachine(Node):
+    # subclasss defines a speed and torque point
+    # torque is a straight increasing line passing through that line
+    def consumed(self):
+        return Line.make((0, 0), (self.speed, self.torque))
 
 
 class WindTurbine(BasicEngine):
@@ -95,57 +176,50 @@ class SteamEngine(BasicEngine):
     torque = 32
 
 
-class Fan(Node):
-    # 2nm * 512rad/s = 1024w
+class Fan(BasicMachine):
     # 1nm * 1024rad/s = 1024w
-    def consumed_torque(self, speed):
-        return speed / 1024
+    speed = 1024
+    torque = 1
 
 
-class Grinder(Node):
+class Grinder(BasicMachine):
     # 128nm * 32rad/s = 4096w
-    def consumed_torque(self, speed):
-        return speed * 4
+    speed = 32
+    torque = 128
 
 
-class Utility(Node):
+class ItemPump(BasicMachine):
     # 4nm * 256rad/s = 1024w
-    def consumed_torque(self, speed):
-        return speed / 64
+    speed = 256
+    torque = 4
 
 
-def calc_torque(node, speed, origin=None):
-    speed = node.gear_shift_speed_in(speed, origin)
-    total_supplied = node.supplied_torque(speed)
-    total_consumed = node.consumed_torque(speed)
+def gather(node, origin=None):
+    total_supplied = node.supplied()
+    total_consumed = node.consumed()
     for n in node.neighbours:
         if n != origin:
-            s = node.gear_shift_speed_out(speed, n)
-            supplied, consumed = calc_torque(n, s, node)
-            supplied = node.gear_shift_torque_in(supplied, n)
-            consumed = node.gear_shift_torque_in(consumed, n)
-            total_supplied += supplied
-            total_consumed += consumed
-    total_supplied = node.gear_shift_torque_out(total_supplied, origin)
-    total_consumed = node.gear_shift_torque_out(total_consumed, origin)
+            supplied, consumed = gather(n, node)
+            total_supplied += supplied * node.neighbours[n]
+            total_consumed += consumed * node.neighbours[n]
+    if origin:
+        total_supplied /= node.neighbours[origin]
+        total_consumed /= node.neighbours[origin]
     return total_supplied, total_consumed
 
 
-def check_limits(node, speed, scale, origin=None):
-    speed = node.gear_shift_speed_in(speed, origin)
-    total_supplied = node.supplied_torque(speed)
-    total_consumed = node.consumed_torque(speed)
-    if scale > 1:
-        total_supplied /= scale
-    else:
-        total_consumed *= scale
+def distribute(node, speed, origin=None, indent=0):
+    if origin:
+        speed /= node.neighbours[origin]
+    total_supplied = node.supplied().get_torque(speed)
+    total_consumed = node.consumed().get_torque(speed)
     total_difference = abs(total_supplied - total_consumed)
     for n in node.neighbours:
         if n != origin:
-            s = node.gear_shift_speed_out(speed, n)
-            supplied, consumed = check_limits(n, s, scale, node)
-            supplied = node.gear_shift_torque_in(supplied, n)
-            consumed = node.gear_shift_torque_in(consumed, n)
+            s = speed * node.neighbours[n]
+            supplied, consumed = distribute(n, s, node, indent+1)
+            supplied *= node.neighbours[n]
+            consumed *= node.neighbours[n]
             total_supplied += supplied
             total_consumed += consumed
             total_difference += abs(supplied - consumed)
@@ -153,169 +227,169 @@ def check_limits(node, speed, scale, origin=None):
     total_difference += abs(total_supplied - total_consumed)
     # we've double counted all the torque differences
     transmitted_torque = total_difference / 2
-    node.check_load_limits(transmitted_torque, speed)
-    total_supplied = node.gear_shift_torque_out(total_supplied, origin)
-    total_consumed = node.gear_shift_torque_out(total_consumed, origin)
+    # and we need to scale it for any gearing
+    # this scales it to max torque, for testing break limits we can also scale to max speed
+    max_gearing = min(node.neighbours.values() + [1])
+    transmitted_torque /= max_gearing
+    internal_speed = speed * max_gearing
+
+    print "{:{}} {:8.2f} {:8.2f} {:8.2f}".format(
+        " " * indent + node.__class__.__name__,
+        TITLE_WIDTH,
+        internal_speed,
+        transmitted_torque,
+        internal_speed * transmitted_torque,
+    )
+
+    if origin:
+        total_supplied /= node.neighbours[origin]
+        total_consumed /= node.neighbours[origin]
     return total_supplied, total_consumed
 
 
-def eval(root, cycles):
-    speed = 1
-    for i in range(cycles):
-        supplied, consumed = calc_torque(root, speed)
-        scale = supplied / consumed if consumed else 0
-        check_limits(root, speed, scale)
-        # print "{:2} {:8.2f} {:8.2f} {:8.2f} {:8.2f} {:8.2f}".format(i, speed, supplied, consumed, speed * consumed, scale)
+def calc(name, root):
+    supplied, consumed = gather(root)
+    total = supplied - consumed
+    speed = total.get_zero_intersect()
+    torque = supplied.get_torque(speed)
+    print "{:{}}    speed   torque    power".format(name, TITLE_WIDTH)
 
-        if consumed:
-            # this code really wants to know the gradient of the consumed torque curve at the current speed
-            # currently I cheat by assuming it's linear back to 0
-            est_final_torque = (supplied + consumed) / 2
-            est_final_speed = speed / consumed * est_final_torque
-            difference = est_final_speed - speed
-            speed += difference * MULTIPLIER
-        else:
-            # the cheat doesn't work for supplied torque as it doesn't intersect at 0
-            # so for now we're just making stuff up
-            speed += (supplied - consumed) * 100
+    supplied, consumed = distribute(root, speed)
+    print
+    assert abs(supplied - consumed) < .1
+    return speed, supplied
 
-        speed = max(speed, 0)
-    print "{:8.2f} {:8.2f} {:8.2f} {:8.2f} {:8.2f}".format(speed, supplied, consumed, supplied - consumed, speed * consumed)
 
 if __name__ == "__main__":
-    print "name     speed   trq_in  trq_out     diff    power"
+    if 1:
+        print "-- Disconnected --"
+
+        root = WindTurbine()
+        calc("", root)
+
+        root = Fan()
+        calc("", root)
+
+        root = Shaft()
+        calc("", root)
 
     if 1:
         print
-        print "fans"
+        print "-- Fans --"
 
-        print "0    ",
         root = Shaft(WindTurbine())
-        eval(root, ITERATIONS)
+        calc("0", root)
 
-        print "1    ",
         root = Shaft(WindTurbine(), Fan())
-        eval(root, ITERATIONS)
+        calc("1", root)
 
-        print "2    ",
         root = Shaft(WindTurbine(), Fan(), Fan())
-        eval(root, ITERATIONS)
+        calc("2", root)
 
-        print "3    ",
         root = Shaft(WindTurbine(), Fan(), Fan(), Fan())
-        eval(root, ITERATIONS)
+        calc("3", root)
 
-        print "4    ",
         root = Shaft(WindTurbine(), Fan(), Fan(), Fan(), Fan())
-        eval(root, ITERATIONS)
+        calc("4", root)
 
-        print "5    ",
         root = Shaft(WindTurbine(), Fan(), Fan(), Fan(), Fan(), Fan())
-        eval(root, ITERATIONS)
+        calc("5", root)
 
-        print "6    ",
         root = Shaft(WindTurbine(), Fan(), Fan(), Fan(), Fan(), Fan(), Fan())
-        eval(root, ITERATIONS)
+        calc("6", root)
 
     if 1:
         print
-        print "twin turbines"
+        print "-- Twin Turbines --"
 
-        print "flat ",
         turbines = Shaft(WindTurbine(), WindTurbine())
         fans = Shaft(Fan(), Fan(), Fan(), Fan(), Fan(), Fan(), Fan(), Fan())
         root = Shaft(turbines, fans)
-        eval(root, ITERATIONS)
+        calc("Flat", root)
 
-        print "tree ",
         turbines = Shaft(WindTurbine(), WindTurbine())
         fans = Shaft(Shaft(Shaft(Fan(), Fan()), Shaft(Fan(), Fan())), Shaft(Shaft(Fan(), Fan()), Shaft(Fan(), Fan())))
         root = Shaft(turbines, fans)
-        eval(root, ITERATIONS)
+        calc("Tree", root)
 
-        print "chain",
         turbines = Shaft(WindTurbine(), WindTurbine())
         fans = Shaft(Fan(), Shaft(Fan(), Shaft(Fan(), Shaft(Fan(), Shaft(Fan(), Shaft(Fan(), Shaft(Fan(), Fan())))))))
         root = Shaft(turbines, fans)
-        eval(root, ITERATIONS)
+        calc("Chain", root)
 
     if 1:
         print
-        print "gears"
+        print "-- Gearing Up --"
 
-        print "none ",
         root = Shaft(WindTurbine(), Grinder())
-        eval(root, ITERATIONS)
+        calc("None", root)
 
-        print "1:1  ",
         root = GearBox((1, WindTurbine()), Grinder())
-        eval(root, ITERATIONS)
+        calc("1:1", root)
 
-        print "16:1 ",
         root = GearBox((16, WindTurbine()), Grinder())
-        eval(root, ITERATIONS)
+        calc("16:1", root)
 
-        print "32:1 ",
         root = GearBox((32, WindTurbine()), Grinder())
-        eval(root, ITERATIONS)
+        calc("32:1", root)
 
-        print "64:1 ",
         root = GearBox((64, WindTurbine()), Grinder())
-        eval(root, ITERATIONS)
+        calc("64:1", root)
 
     if 1:
         print
-        print "gears 2"
+        print "-- Gearing Down --"
 
-        print "none ",
         root = Shaft(WindTurbine(), Grinder())
-        eval(root, ITERATIONS)
+        calc("None", root)
 
-        print "1:1  ",
         root = GearBox(WindTurbine(), (1/1, Grinder()))
-        eval(root, ITERATIONS)
+        calc("1:1", root)
 
-        print "16:1 ",
         root = GearBox(WindTurbine(), (1/16, Grinder()))
-        eval(root, ITERATIONS)
+        calc("16:1", root)
 
-        print "32:1 ",
         root = GearBox(WindTurbine(), (1/32, Grinder()))
-        eval(root, ITERATIONS)
+        calc("32:1", root)
 
-        print "64:1 ",
         root = GearBox(WindTurbine(), (1/64, Grinder()))
-        eval(root, ITERATIONS)
+        calc("64:1", root)
 
     if 1:
         print
-        print "gears 3"
+        print "-- Gears Different Root --"
 
-        print "none ",
         root = Grinder(Shaft(WindTurbine()))
-        eval(root, ITERATIONS)
+        calc("None", root)
 
-        print "1:1  ",
         root = Grinder(GearBox((1, WindTurbine())))
-        eval(root, ITERATIONS)
+        calc("1:1", root)
 
-        print "16:1 ",
         root = Grinder(GearBox((16, WindTurbine())))
-        eval(root, ITERATIONS)
+        calc("16:1", root)
 
-        print "32:1 ",
         root = Grinder(GearBox((32, WindTurbine())))
-        eval(root, ITERATIONS)
+        calc("32:1", root)
 
-        print "64:1 ",
         root = Grinder(GearBox((64, WindTurbine())))
-        eval(root, ITERATIONS)
+        calc("64:1", root)
 
     if 1:
         print
-        print "tnt machine"
+        print "-- TNT Machine --"
 
-        print "real ",
+        root = SteamEngine(GearBox((1/16, Shaft(
+            Grinder(),
+            Grinder(),
+            Grinder(),
+            GearBox((8, Shaft(
+                ItemPump(),
+                ItemPump(),
+                ItemPump(),
+            )))
+        ))))
+        calc("Flat", root)
+
         root = SteamEngine(GearBox((1/16, Shaft(
             Shaft(
                 Grinder(),
@@ -324,25 +398,64 @@ if __name__ == "__main__":
             Shaft(
                 Grinder(),
                 GearBox((8, Shaft(
-                    Utility(),
+                    ItemPump(),
                     Shaft(
-                        Utility(),
-                        Utility(),
+                        ItemPump(),
+                        ItemPump(),
                     )
                 )))
             )
         ))))
-        eval(root, ITERATIONS)
+        calc("Real", root)
 
-        print "flat ",
-        root = SteamEngine(GearBox((1/16, Shaft(
-            Grinder(),
-            Grinder(),
-            Grinder(),
-            GearBox((8, Shaft(
-                Utility(),
-                Utility(),
-                Utility(),
-            )))
-        ))))
-        eval(root, ITERATIONS)
+    if 1:
+        print
+        print "-- Unloaded --"
+
+        root = Shaft(GearBox((32, WindTurbine()), Grinder()))
+        calc("Shaft", root)
+
+        root = GearBox((32, WindTurbine()), Grinder(), Shaft())
+        calc("Side", root)
+
+        root = Shaft(GearBox((32, WindTurbine()), Grinder()), GearBox((32, WindTurbine()), Grinder()))
+        calc("Link", root)
+
+
+
+"""
+Extractor
+a     128 512 65536
+b    2048   8 16384
+c    8192   4 32768
+d     256 256 65536
+
+ab   2048 512
+ac   8192 512
+ad    256 512
+bc   8192   8
+bd   2048 256
+cd   8192 256
+
+abc
+abd
+acd
+bcd
+
+abcd 8192 512
+"""
+
+def L(s, t):
+    return Line.make((0, 0), (s, t))
+
+a = L(128, 512)
+b = L(2048, 8)
+c = L(8192, 4)
+d = L(256, 256)
+ab = L(2048, 512)
+#assert ab.get_torque(1) >= max(a.get_torque(1), b.get_torque(1))
+
+print "ab", (a + b).get_torque(2048)
+
+
+print "abcd", (a + b + c + d).get_torque(8192)
