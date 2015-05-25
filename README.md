@@ -1,9 +1,8 @@
 # Disclaimers
-I enjoy Rotarycraft and I think it's one of the best industry mods. What follows shouldn't be taken as criticism but
+I enjoy RotaryCraft and I think it's one of the best industry mods. What follows shouldn't be taken as criticism but
 rather as a humble suggestion on how an already great mod could maybe be made even better.
 
-I also appreciate and respect the efforts Reika has made in balance and progression and I try throughout to respect
-that.
+I also appreciate the efforts Reika has made in balance and progression and I try throughout to respect them.
 
 It's worth noting that I'm still on my first play through however I have all the bedrock toys and an automated extractor
 setup so I feel I'm reasonably familiar with the mod.
@@ -21,13 +20,13 @@ maintain the existing balance.
 
 
 # Motivation
-A couple things in Rotarycraft bug me, things that don't feel quite right.
+A couple things in RotaryCraft bug me, things that don't feel quite right.
 
 Somewhere in the docs it says "the "load" on a shaft has no effect on its power consumption - a disconnected shaft still
 draws any and all power given to it, but simply wastes it".
 
 In reality a dangling shaft just spins and aside from adding a little friction has no effect on the rest of the system.
-Currently in Rotarycraft that dangling shaft will waste a significant portion of the total power.
+Currently in RotaryCraft that dangling shaft will waste a significant portion of the total power.
 
 This also has the effect of making clutches less useful, they can turn off machines, but they can't divert the power the
 machine was using elsewhere.
@@ -48,7 +47,7 @@ performance cost.
 
 
 # Principles
-0: Power = Torque * Speed, the Rotarycraft fundamental law.
+0: Power = Torque * Speed, the RotaryCraft fundamental law.
 
 1: Engine torque produced generally decreases as speed increases (and eventually hits 0).
 
@@ -86,7 +85,7 @@ I discuss what happens if you remove these restrictions under "Dynamic variant" 
 
 
 
-# Changes from Rotarycraft
+# Changes from RotaryCraft
 No input and output sides.
 
 No need for torque ratios on shaft junctions.
@@ -151,7 +150,7 @@ For example here's the theory diagrams from above redrawn for a DC electric moto
 ![Torque](images/dcpump_3_torque.png)
 ![Power](images/dcpump_4_power.png)
 
-As you can see the equilibrium is the same as what you get hooking these together in Rotarycraft.
+As you can see the equilibrium is the same as what you get hooking these together in RotaryCraft.
 
 You'll note that I changed the shape of the engine curve, this isn't strictly necessary but reduces the chance of
 accidentally introducing balance breaking behavior.
@@ -189,7 +188,7 @@ speed of the flywheel. I haven't done a proof of concept of these yet but I'm co
 
 # Dynamic variant
 I another variant on this system, the one detailed above I call static it is simpler, has better compatibility with
-existing Rotarycraft and handles chunk loading smoother, the other I call dynamic.
+existing RotaryCraft and handles chunk loading smoother, the other I call dynamic.
 
 We remove the "additional simplifying restrictions", which allows for some interesting additional behavior.
 
