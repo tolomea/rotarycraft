@@ -68,10 +68,10 @@ system back to an equilibrium speed.
 
 7: Machines may have an additional function mapping speed to cycle time.
 
-![Engine](theory_1_engine.png)
-![Machine](theory_2_machine.png)
-![Torque](theory_3_torque.png)
-![Power](theory_4_power.png)
+![Engine](images/theory_1_engine.png)
+![Machine](images/theory_2_machine.png)
+![Torque](images/theory_3_torque.png)
+![Power](images/theory_4_power.png)
 
 
 
@@ -146,10 +146,10 @@ two mechanics let you get many simple setups working with a close approximation 
 
 For example here's the theory diagrams from above redrawn for a DC electric motor and a pump:
 
-![Engine](dcpump_1_engine.png)
-![Machine](dcpump_2_machine.png)
-![Torque](dcpump_3_torque.png)
-![Power](dcpump_4_power.png)
+![Engine](images/dcpump_1_engine.png)
+![Machine](images/dcpump_2_machine.png)
+![Torque](images/dcpump_3_torque.png)
+![Power](images/dcpump_4_power.png)
 
 As you can see the equilibrium is the same as what you get hooking these together in Rotarycraft.
 
@@ -158,11 +158,11 @@ accidentally introducing balance breaking behavior.
 
 I mentioned above that gears transform the curves, here's an example of that:
 
-![Engine](grinder_1_engine.png)
-![Machine](grinder_2_machine.png)
-![Machine](grinder_3_machine32.png)
-![Torque](grinder_4_torque.png)
-![Power](grinder_5_power.png)
+![Engine](images/grinder_1_engine.png)
+![Machine](images/grinder_2_machine.png)
+![Machine](images/grinder_3_machine32.png)
+![Torque](images/grinder_4_torque.png)
+![Power](images/grinder_5_power.png)
 
 Note that in this instance the wind turbine is acting as the origin and so the equilibrium speed is at a 1:1 gearing
 with the wind turbine. Distribute would of course then calculate what the actual torque and speed for the grinder are.
