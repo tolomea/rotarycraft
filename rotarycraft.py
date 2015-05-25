@@ -1,7 +1,6 @@
 from __future__ import division
 
-from collections import defaultdict, OrderedDict
-from lib import Line, calc, Node, BasicEngine, BasicMachine
+from lib import calc, Node, BasicEngine, BasicMachine
 
 
 class Shaft(Node):

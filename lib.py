@@ -1,6 +1,6 @@
 from __future__ import division
 
-from collections import defaultdict, OrderedDict
+from collections import OrderedDict
 
 TITLE_WIDTH = 15
 
@@ -102,21 +102,21 @@ class Line(object):
             return op[0]
 
 
-assert Line.make((0,0), (10,10)) == Line((0,0,1))
-assert Line.make((0,0), (10,10)) * 2 == Line((0, 0, 4))
-assert Line.make((0,0), (10,10)) / 2 == Line((0, 0, 0.25))
-assert Line.make((0,0), (10,10), (20, 10)) == Line((0, 0, 1), (10, 10, 0))
-assert Line.make((0,0), (10,10), (20, 10)) * 2 == Line((0, 0, 4), (5, 20, 0))
-assert Line.make((0,0), (10,10), (20, 10)) / 2 == Line((0, 0, 0.25), (20, 5, 0))
-assert Line.make((0,10), (10,10), (20, 0)) == Line((0, 10, 0), (10, 10, -1), (20, 0, 0))
-assert Line.make((0,10), (10,10), (20, 0)) * 2 == Line((0, 20, 0), (5, 20, -4), (10, 0, 0))
-assert Line.make((0,10), (10,10), (20, 0)) / 2 == Line((0, 5, 0), (20, 5, -0.25), (40, 0, 0))
+assert Line.make((0, 0), (10, 10)) == Line((0, 0, 1))
+assert Line.make((0, 0), (10, 10)) * 2 == Line((0, 0, 4))
+assert Line.make((0, 0), (10, 10)) / 2 == Line((0, 0, 0.25))
+assert Line.make((0, 0), (10, 10), (20, 10)) == Line((0, 0, 1), (10, 10, 0))
+assert Line.make((0, 0), (10, 10), (20, 10)) * 2 == Line((0, 0, 4), (5, 20, 0))
+assert Line.make((0, 0), (10, 10), (20, 10)) / 2 == Line((0, 0, 0.25), (20, 5, 0))
+assert Line.make((0, 10), (10, 10), (20, 0)) == Line((0, 10, 0), (10, 10, -1), (20, 0, 0))
+assert Line.make((0, 10), (10, 10), (20, 0)) * 2 == Line((0, 20, 0), (5, 20, -4), (10, 0, 0))
+assert Line.make((0, 10), (10, 10), (20, 0)) / 2 == Line((0, 5, 0), (20, 5, -0.25), (40, 0, 0))
 
-assert Line.make((0,0), (10,10)) + Line.make((0,0), (10,10)) == Line((0, 0.0, 2.0))
-assert Line.make((0,0), (10,10), (20,20)) + Line.make((0,0), (10,10), (20,20)) == Line((0, 0, 2.0), (10, 20.0, 2.0))
-assert Line.make((0,0), (10,10), (20,20)) + Line.make((0,0), (10,10)) == Line((0, 0, 2.0), (10, 20.0, 2.0))
-assert Line.make((0,0), (10,10)) + Line.make((0,10), (5,10), (15,0)) == Line((0, 10, 1.0), (5, 15.0, 0.0), (15, 15.0, 1.0))
-assert Line.make((0,10), (5,10), (15,0)) + Line.make((0,0), (10,10)) == Line((0, 10, 1.0), (5, 15.0, 0.0), (15, 15.0, 1.0))
+assert Line.make((0, 0), (10, 10)) + Line.make((0, 0), (10, 10)) == Line((0, 0.0, 2.0))
+assert Line.make((0, 0), (10, 10), (20, 20)) + Line.make((0, 0), (10, 10), (20, 20)) == Line((0, 0, 2.0), (10, 20.0, 2.0))
+assert Line.make((0, 0), (10, 10), (20, 20)) + Line.make((0, 0), (10, 10)) == Line((0, 0, 2.0), (10, 20.0, 2.0))
+assert Line.make((0, 0), (10, 10)) + Line.make((0, 10), (5, 10), (15, 0)) == Line((0, 10, 1.0), (5, 15.0, 0.0), (15, 15.0, 1.0))
+assert Line.make((0, 10), (5, 10), (15, 0)) + Line.make((0, 0), (10, 10)) == Line((0, 10, 1.0), (5, 15.0, 0.0), (15, 15.0, 1.0))
 
 
 class Node(object):
@@ -213,10 +213,8 @@ def calc(name, root):
     supplied, consumed = gather(root)
     total = supplied - consumed
     speed = total.get_zero_intersect()
-    torque = supplied.get_torque(speed)
     print "{:{}}    speed   torque    power".format(name, TITLE_WIDTH)
 
     supplied, consumed = distribute(root, speed)
     print
     assert abs(supplied - consumed) < .1
-    return speed, supplied
