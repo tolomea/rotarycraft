@@ -1,0 +1,255 @@
+-- Disconnected --
+                   speed   torque    power
+WindTurbine      2048.00     0.00     0.00
+
+                   speed   torque    power
+Fan                 0.00     0.00     0.00
+
+                   speed   torque    power
+Shaft               0.00     0.00     0.00
+
+
+-- Fans --
+0                  speed   torque    power
+ WindTurbine     2048.00     0.00     0.00
+Shaft            2048.00     0.00     0.00
+
+1                  speed   torque    power
+ WindTurbine     1638.40     1.60  2621.44
+ Fan             1638.40     1.60  2621.44
+Shaft            1638.40     1.60  2621.44
+
+2                  speed   torque    power
+ WindTurbine     1365.33     2.67  3640.89
+ Fan             1365.33     1.33  1820.44
+ Fan             1365.33     1.33  1820.44
+Shaft            1365.33     2.67  3640.89
+
+3                  speed   torque    power
+ WindTurbine     1170.29     3.43  4012.41
+ Fan             1170.29     1.14  1337.47
+ Fan             1170.29     1.14  1337.47
+ Fan             1170.29     1.14  1337.47
+Shaft            1170.29     3.43  4012.41
+
+4                  speed   torque    power
+ WindTurbine     1024.00     4.00  4096.00
+ Fan             1024.00     1.00  1024.00
+ Fan             1024.00     1.00  1024.00
+ Fan             1024.00     1.00  1024.00
+ Fan             1024.00     1.00  1024.00
+Shaft            1024.00     4.00  4096.00
+
+5                  speed   torque    power
+ WindTurbine      819.20     4.00  3276.80
+ Fan              819.20     0.80   655.36
+ Fan              819.20     0.80   655.36
+ Fan              819.20     0.80   655.36
+ Fan              819.20     0.80   655.36
+ Fan              819.20     0.80   655.36
+Shaft             819.20     4.00  3276.80
+
+6                  speed   torque    power
+ WindTurbine      682.67     4.00  2730.67
+ Fan              682.67     0.67   455.11
+ Fan              682.67     0.67   455.11
+ Fan              682.67     0.67   455.11
+ Fan              682.67     0.67   455.11
+ Fan              682.67     0.67   455.11
+ Fan              682.67     0.67   455.11
+Shaft             682.67     4.00  2730.67
+
+
+-- Twin Turbines --
+Flat               speed   torque    power
+  WindTurbine    1024.00     4.00  4096.00
+  WindTurbine    1024.00     4.00  4096.00
+ Shaft           1024.00     8.00  8192.00
+  Fan            1024.00     1.00  1024.00
+  Fan            1024.00     1.00  1024.00
+  Fan            1024.00     1.00  1024.00
+  Fan            1024.00     1.00  1024.00
+  Fan            1024.00     1.00  1024.00
+  Fan            1024.00     1.00  1024.00
+  Fan            1024.00     1.00  1024.00
+  Fan            1024.00     1.00  1024.00
+ Shaft           1024.00     8.00  8192.00
+Shaft            1024.00     8.00  8192.00
+
+Tree               speed   torque    power
+  WindTurbine    1024.00     4.00  4096.00
+  WindTurbine    1024.00     4.00  4096.00
+ Shaft           1024.00     8.00  8192.00
+    Fan          1024.00     1.00  1024.00
+    Fan          1024.00     1.00  1024.00
+   Shaft         1024.00     2.00  2048.00
+    Fan          1024.00     1.00  1024.00
+    Fan          1024.00     1.00  1024.00
+   Shaft         1024.00     2.00  2048.00
+  Shaft          1024.00     4.00  4096.00
+    Fan          1024.00     1.00  1024.00
+    Fan          1024.00     1.00  1024.00
+   Shaft         1024.00     2.00  2048.00
+    Fan          1024.00     1.00  1024.00
+    Fan          1024.00     1.00  1024.00
+   Shaft         1024.00     2.00  2048.00
+  Shaft          1024.00     4.00  4096.00
+ Shaft           1024.00     8.00  8192.00
+Shaft            1024.00     8.00  8192.00
+
+Chain              speed   torque    power
+  WindTurbine    1024.00     4.00  4096.00
+  WindTurbine    1024.00     4.00  4096.00
+ Shaft           1024.00     8.00  8192.00
+  Fan            1024.00     1.00  1024.00
+   Fan           1024.00     1.00  1024.00
+    Fan          1024.00     1.00  1024.00
+     Fan         1024.00     1.00  1024.00
+      Fan        1024.00     1.00  1024.00
+       Fan       1024.00     1.00  1024.00
+        Fan      1024.00     1.00  1024.00
+        Fan      1024.00     1.00  1024.00
+       Shaft     1024.00     2.00  2048.00
+      Shaft      1024.00     3.00  3072.00
+     Shaft       1024.00     4.00  4096.00
+    Shaft        1024.00     5.00  5120.00
+   Shaft         1024.00     6.00  6144.00
+  Shaft          1024.00     7.00  7168.00
+ Shaft           1024.00     8.00  8192.00
+Shaft            1024.00     8.00  8192.00
+
+
+-- Gearing Up --
+None               speed   torque    power
+ WindTurbine        1.00     4.00     4.00
+ Grinder            1.00     4.00     4.00
+Shaft               1.00     4.00     4.00
+
+1:1                speed   torque    power
+ WindTurbine        1.00     4.00     4.00
+ Grinder            1.00     4.00     4.00
+GearBox             1.00     4.00     4.00
+
+16:1               speed   torque    power
+ WindTurbine      256.00     4.00  1024.00
+ Grinder           16.00    64.00  1024.00
+GearBox            16.00    64.00  1024.00
+
+32:1               speed   torque    power
+ WindTurbine     1024.00     4.00  4096.00
+ Grinder           32.00   128.00  4096.00
+GearBox            32.00   128.00  4096.00
+
+64:1               speed   torque    power
+ WindTurbine     1638.40     1.60  2621.44
+ Grinder           25.60   102.40  2621.44
+GearBox            25.60   102.40  2621.44
+
+
+-- Gearing Down --
+None               speed   torque    power
+ WindTurbine        1.00     4.00     4.00
+ Grinder            1.00     4.00     4.00
+Shaft               1.00     4.00     4.00
+
+1:1                speed   torque    power
+ WindTurbine        1.00     4.00     4.00
+ Grinder            1.00     4.00     4.00
+GearBox             1.00     4.00     4.00
+
+16:1               speed   torque    power
+ WindTurbine      256.00     4.00  1024.00
+ Grinder           16.00    64.00  1024.00
+GearBox            16.00    64.00  1024.00
+
+32:1               speed   torque    power
+ WindTurbine     1024.00     4.00  4096.00
+ Grinder           32.00   128.00  4096.00
+GearBox            32.00   128.00  4096.00
+
+64:1               speed   torque    power
+ WindTurbine     1638.40     1.60  2621.44
+ Grinder           25.60   102.40  2621.44
+GearBox            25.60   102.40  2621.44
+
+
+-- Gears Different Root --
+None               speed   torque    power
+  WindTurbine       1.00     4.00     4.00
+ Shaft              1.00     4.00     4.00
+Grinder             1.00     4.00     4.00
+
+1:1                speed   torque    power
+  WindTurbine       1.00     4.00     4.00
+ GearBox            1.00     4.00     4.00
+Grinder             1.00     4.00     4.00
+
+16:1               speed   torque    power
+  WindTurbine     256.00     4.00  1024.00
+ GearBox           16.00    64.00  1024.00
+Grinder            16.00    64.00  1024.00
+
+32:1               speed   torque    power
+  WindTurbine    1024.00     4.00  4096.00
+ GearBox           32.00   128.00  4096.00
+Grinder            32.00   128.00  4096.00
+
+64:1               speed   torque    power
+  WindTurbine    1638.40     1.60  2621.44
+ GearBox           25.60   102.40  2621.44
+Grinder            25.60   102.40  2621.44
+
+
+-- TNT Machine --
+Flat               speed   torque    power
+   Grinder         33.03   132.13  4364.52
+   Grinder         33.03   132.13  4364.52
+   Grinder         33.03   132.13  4364.52
+     ItemPump     264.26     4.13  1091.13
+     ItemPump     264.26     4.13  1091.13
+     ItemPump     264.26     4.13  1091.13
+    Shaft         264.26    12.39  3273.39
+   GearBox         33.03    99.10  3273.39
+  Shaft            33.03   495.48 16366.95
+ GearBox           33.03   495.48 16366.95
+SteamEngine       528.52    30.97 16366.95
+
+Real               speed   torque    power
+    Grinder        33.03   132.13  4364.52
+    Grinder        33.03   132.13  4364.52
+   Shaft           33.03   264.26  8729.04
+    Grinder        33.03   132.13  4364.52
+      ItemPump    264.26     4.13  1091.13
+       ItemPump   264.26     4.13  1091.13
+       ItemPump   264.26     4.13  1091.13
+      Shaft       264.26     8.26  2182.26
+     Shaft        264.26    12.39  3273.39
+    GearBox        33.03    99.10  3273.39
+   Shaft           33.03   231.23  7637.91
+  Shaft            33.03   495.48 16366.95
+ GearBox           33.03   495.48 16366.95
+SteamEngine       528.52    30.97 16366.95
+
+
+-- Unloaded --
+Shaft              speed   torque    power
+  WindTurbine    1024.00     4.00  4096.00
+  Grinder          32.00   128.00  4096.00
+ GearBox           32.00   128.00  4096.00
+Shaft              32.00     0.00     0.00
+
+Side               speed   torque    power
+ WindTurbine     1024.00     4.00  4096.00
+ Grinder           32.00   128.00  4096.00
+ Shaft             32.00     0.00     0.00
+GearBox            32.00   128.00  4096.00
+
+Link               speed   torque    power
+  WindTurbine    1024.00     4.00  4096.00
+  Grinder          32.00   128.00  4096.00
+ GearBox           32.00   128.00  4096.00
+  WindTurbine    1024.00     4.00  4096.00
+  Grinder          32.00   128.00  4096.00
+ GearBox           32.00   128.00  4096.00
+Shaft              32.00     0.00     0.00
+
