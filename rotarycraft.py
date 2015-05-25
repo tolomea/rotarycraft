@@ -89,12 +89,41 @@ if __name__ == "__main__":
         calc("Flat", root)
 
         turbines = Shaft(WindTurbine(), WindTurbine())
-        fans = Shaft(Shaft(Shaft(Fan(), Fan()), Shaft(Fan(), Fan())), Shaft(Shaft(Fan(), Fan()), Shaft(Fan(), Fan())))
+        fans = Shaft(
+            Shaft(
+                Shaft(Fan(), Fan()),
+                Shaft(Fan(), Fan()),
+            ), Shaft(
+                Shaft(Fan(), Fan()),
+                Shaft(Fan(), Fan()),
+            )
+        )
         root = Shaft(turbines, fans)
         calc("Tree", root)
 
         turbines = Shaft(WindTurbine(), WindTurbine())
-        fans = Shaft(Fan(), Shaft(Fan(), Shaft(Fan(), Shaft(Fan(), Shaft(Fan(), Shaft(Fan(), Shaft(Fan(), Fan())))))))
+        fans = Shaft(
+            Fan(),
+            Shaft(
+                Fan(),
+                Shaft(
+                    Fan(),
+                    Shaft(
+                        Fan(),
+                        Shaft(
+                            Fan(),
+                            Shaft(
+                                Fan(),
+                                Shaft(
+                                    Fan(),
+                                    Fan(),
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
         root = Shaft(turbines, fans)
         calc("Chain", root)
 
@@ -199,5 +228,8 @@ if __name__ == "__main__":
         root = GearBox((32, WindTurbine()), Grinder(), Shaft())
         calc("Side", root)
 
-        root = Shaft(GearBox((32, WindTurbine()), Grinder()), GearBox((32, WindTurbine()), Grinder()))
+        root = Shaft(
+            GearBox((32, WindTurbine()), Grinder()),
+            GearBox((32, WindTurbine()), Grinder()),
+        )
         calc("Link", root)

@@ -233,7 +233,12 @@ There are other files of note in repository:
 * [rotarycraft.py](rotarycraft.py) - various example uses of lib.py
 * [rotarycraft.txt](rotarycraft.txt) - example output from running rotarycraft.py
 
-The format of the rotarycraft.py examples and output might not be the clearest, so I will explain one, first the code:
+The format of the rotarycraft.py examples and output might not be the clearest, so I will explain one.
+
+But first it's important to note that I've been a bit liberal with gearboxes and shafts, so either may have more than
+two connections and subsequently I don't have explict shaft junctions.
+
+The code:
 
 ```python
 Shaft(
