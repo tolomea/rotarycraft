@@ -187,8 +187,8 @@ speed of the flywheel. I haven't done a proof of concept of these yet but I'm co
 
 
 # Dynamic variant
-I another variant on this system, the one detailed above I call static it is simpler, has better compatibility with
-existing RotaryCraft and handles chunk loading smoother, the other I call dynamic.
+I have another variant on this system. The one detailed above I call static, it is simpler, has better compatibility with
+existing RotaryCraft and handles chunk loading smoother, the other one I call dynamic.
 
 We remove the "additional simplifying restrictions", which allows for some interesting additional behavior.
 
