@@ -1,11 +1,8 @@
 # Disclaimers
-I enjoy RotaryCraft and I think it's one of the best industry mods. What follows shouldn't be taken as criticism but
+I enjoy RotaryCraft and I think it's one of the best Minecraft industry mods. What follows shouldn't be taken as criticism but
 rather as a humble suggestion on how an already great mod could maybe be made even better.
 
 I also appreciate the efforts Reika has made in balance and progression and I try throughout to respect them.
-
-It's worth noting that I'm still on my first play through however I have all the bedrock toys and an automated extractor
-setup so I feel I'm reasonably familiar with the mod.
 
 
 
@@ -47,17 +44,20 @@ performance cost.
 
 
 # Principles
+Lets lay out some principles we'd like the adjusted system to adhere to.
+
 0: Power = Torque * Speed, the RotaryCraft fundamental law.
 
 1: Engine torque produced generally decreases as speed increases (and eventually hits 0).
 
-2: Machine torque consumed generally increases as speed increases (and eventually goes to infinity). note: due to pt0
-the power (produced / consumed) curves do not follow these torque curves, power can actually increase and decrease
-across the speed range.
+2: Machine torque consumed generally increases as speed increases (and eventually goes to infinity). 
+
+note: due to pt0 the power (produced / consumed) curves do not follow these torque curves, power can actually 
+increase and decrease across the speed range.
 
 3: These torque curves may change over time or depending on fuel etc.
 
-4: Gears simply apply a multiplicative transformation to the torque curves, multiplying and dividing the axes.
+4: Gears simply apply a multiplicative transformation to the torque curves, multiplying and dividing the axes. So a 2x gearbox will double the speed and halve the torque or vice versa depending on orientation.
 
 5: Equilibrium speeds exist where the total torque produced and consumed curves cross (n.b. due to pt0 this is also
 where the power curves cross). When generated torque > consumed torque speed increases and vice versa bringing the
@@ -75,30 +75,31 @@ system back to an equilibrium speed.
 
 
 # Additional simplifying restrictions
+I'm going to add some additional restrictions to simplifiy the implementation and behaviour of the system. I discuss what happens if you remove these restrictions under "Dynamic variant" at the end.
+
 1b: Engine torque may not increase with speed, subsequently at speed 0 all engines are at max torque.
 
 2b: Machine torque is strictly increasing only, subsequently at speed 0 all machines are at zero torque.
 
 5b: These restrictions mean any setup has exactly 1 equilibrium speed.
 
-I discuss what happens if you remove these restrictions under "Dynamic variant" at the end.
-
 
 
 # Changes from RotaryCraft
-No input and output sides.
+Shafts and gearboxes don't have input and output sides.
 
-No need for torque ratios on shaft junctions.
+There is no need for torque ratios on shaft junctions.
 
-No speed / torque mode on gearboxes you just turn them around.
+There is no speed / torque mode on gearboxes you just turn them around.
 
 A dangling shaft consumes no power.
 
 
 
 # Calculating the equilibrium speed
-Calculating the current equilibrium can be done in a single pass, there is no need to iteratively seek the solution.
-That pass consists of three steps:
+Calculating the current equilibrium can be done in a single pass, it doesn't have to be iterative like some other systems. Also that calculation is O(n) where n is the number of elements in the system (engines, machines, gearboxes and shafts). 
+
+That single pass calculation consists of three steps:
 
 1: Gather the total torque produced and consumed curves for the whole network.
 
@@ -109,15 +110,16 @@ That pass consists of three steps:
 The associated code implements gather and distribute as recursive depth first searches and can proceed from any point in
 the network (the origin) applying gearing transformations as it proceeds.
 
-Gather passes around and combines Lines, these are chains of straight line segments. Dealing only in straight segments
+Gather passes around and combines Lines, these are chains of straight line segments which represent the torque curves. 
+Dealing only in straight segments
 makes all the math much easier and I haven't found a compelling need for curves yet (n.b. straight segments in the
 torque curves produce parabolic segments in the power curves).
 
-Gather ultimately produces the total torque produced and consumed lines for the whole network. Calc intersects these to
+Gather ultimately produces the total torque produced and consumed lines (aka curves) for the whole network. Calc intersects these to
 produce the equilibrium speed at the origin.
 
 Distribute then spreads this speed back through the network (again applying gearing transformations) so that we can
-calculate the actual speed and transferred torque at every point.
+calculate the actual speed and transferred torque at every point. Allowing us to detect elements that are overloaded and calculate the actual power produced by each engine and delivered to each machine.
 
 
 
@@ -127,8 +129,8 @@ If the recursive traversal is an issue then it could of course be made iterative
 You could also cache a bunch of stuff, every block would need a quick way to find the origin of it's network. Then at
 the origin you would need a list of every engine and machine and their gear differences with respect to the origin. That
 would let you skip gather for non topology changes, and work out the speed at each engine and machine. However to get
-the true transmitted torque I think you still have to run distribute, but that could be done less frequently as it's
-only needed for load limit checks.
+the true transmitted torque for the individual shafts I think you still have to run distribute, but that could be done 
+less frequently as it's only needed for load limit checks.
 
 I need to think some more to see if I can concoct a way of doing the calculation as block to block updates like
 redstone, I'm not optimistic about the chances of that being possible.
@@ -195,7 +197,7 @@ We remove the "additional simplifying restrictions", which allows for some inter
 A setup may have multiple equilibrium speeds and manipulating the system in real time can bump it from one equilibrium
 to another.
 
-This allows for engine that can stall out and machines that require extra torque to get them started. It can even allow
+This allows for engines that can stall out and machines that require extra torque to get them started. It can even allow
 for engines that require starter motors.
 
 In practice this is only fractionally harder to calculate. However in game play terms it makes things a lot more
@@ -206,20 +208,22 @@ Ultimately I'm not convinced that these behaviors are worth the extra complexity
 
 
 
-# An example of the difference between the variants
-We have a steam engine driving some machines, the system is turning and at equilibrium.
+# An example difference between the variants
+Because we've removed restriction 1b above we can change the steam engine to have very little torque at low speed, so it needs to be spun up before it can drive anything.
+
+Imagine we have a steam engine driving some machines, the system is turning and at equilibrium.
 
 We add a new machine to the line (perhaps by engaging a clutch) overloading the steam engine, the setup winds down to a
 halt, technically we've lifted the consumed torque curve so the only equilibrium speed is at 0.
 
-We remove the new machine returning the setup to it's previous state.
+Then we remove the new machine returning the setup to it's previous configuration.
 
 In the static system the steam engine has max torque at 0 speed so it spins up to it's old speed and the setup returns
 to the old (and only) equilibrium speed.
 
-In the dynamic system the steam engine might have no torque at low speed, so it can't restart the existing machines,
-it's effectively stalled, technically speaking the setup actually has two equilibrium speeds the second being at 0
-speed, before we messed with it it was operating at the higher equilibrium speed, now we've bumped it to the lower one.
+In the dynamic system the steam engine has no torque at low speed, so it can't restart the existing machines,
+it's effectively stalled. Technically speaking the setup actually has two equilibrium speeds the second being at 0
+speed. Before we messed with it it was operating at the higher equilibrium speed, now we've bumped it to the lower one.
 
 To restart the steam engine we have to remove all the load so it is free to spin up to full speed, then we can reattach
 the load and it will settle into the original equilibrium.
