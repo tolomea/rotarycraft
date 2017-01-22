@@ -1,5 +1,5 @@
 # Disclaimers
-I enjoy RotaryCraft and I think it's one of the best Minecraft industry mods. What follows shouldn't be taken as criticism but
+I enjoy [RotaryCraft](https://sites.google.com/site/reikasminecraft/rotarycraft) and I think it's one of the best Minecraft industry mods. What follows shouldn't be taken as criticism but
 rather as a humble suggestion on how an already great mod could maybe be made even better.
 
 I also appreciate the efforts Reika has made in balance and progression and I try throughout to respect them.
@@ -19,7 +19,7 @@ maintain the existing balance.
 # Motivation
 A couple things in RotaryCraft bug me, things that don't feel quite right.
 
-Somewhere in the docs it says "the "load" on a shaft has no effect on its power consumption - a disconnected shaft still
+In RotaryCraft "the "load" on a shaft has no effect on its power consumption - a disconnected shaft still
 draws any and all power given to it, but simply wastes it".
 
 In reality a dangling shaft just spins and aside from adding a little friction has no effect on the rest of the system.
@@ -28,7 +28,7 @@ Currently in RotaryCraft that dangling shaft will waste a significant portion of
 This also has the effect of making clutches less useful, they can turn off machines, but they can't divert the power the
 machine was using elsewhere.
 
-Also the handling of junctions in general makes line shaft (http://en.wikipedia.org/wiki/Line_shaft) setups impractical,
+Also the handling of junctions in general makes [line shaft](http://en.wikipedia.org/wiki/Line_shaft) setups impractical,
 as adding a new engine or machine to the line can require adjusting multiple junctions and the ratios they support are
 limited.
 
